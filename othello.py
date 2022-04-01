@@ -1,5 +1,4 @@
 import numpy as np
-import tkinter as tk
 
 
 class Board:
@@ -12,6 +11,7 @@ class Board:
         self.player = 1
         self.possible_moves(self.player)
         self.end = False
+        self.winner = 0
 
     def possible_moves(self, player):
         opp = 3 - player  # opponent
@@ -131,8 +131,13 @@ class Board:
 
     def reset(self):
         self.__init__()
-        
+
+    def get_curr_info(self):
+        return self.board, self.player, self.n_moves, self.moves
+
     def make_move(self, i):
+        if self.end:
+            return False
         x, y = self.moves[i]
         self.board[x][y] = self.player
         for (x, y) in self.flip_list[i]:
@@ -142,6 +147,16 @@ class Board:
             self.player = 3 - self.player
         elif not(self.possible_moves(self.player)):
             self.end = True
+            self.player = 0
+            num1 = self.count(1)
+            num2 = self.count(2)
+            if num1 == num2:
+                self.winner = 0
+            elif num1 > num2:
+                self.winner = 1
+            else:
+                self.winner = 2
+        return not self.end
 
     def count(self, p):
         num = 0
@@ -150,47 +165,3 @@ class Board:
                 if self.board[i][j] == p:
                     num += 1
         return num
-
-    def play(self, get_move_func, display = False):
-        while not self.end:
-            move = get_move_func(self.player, self.n_moves, self.moves)
-            self.make_move(move)
-            if display:
-                self.display()
-        num1 = self.count(1)
-        num2 = self.count(2)
-        if num1 == num2:
-            if display:
-                print("game drawn")
-            return 0
-        elif num1 > num2:
-            if display:
-                print("player 1 wins")
-            return 1
-        else:
-            if display:
-                print("player 2 wins")
-            return 2
-
-    def display(self):
-        # for i in range(8):
-        #     for j in range(8):
-        #         if
-        print(self.board)
-
-
-def get_human_move(player, num_moves, moves):
-    print("player:", player, "\nmoves:", moves)
-    i = int(input(str(num_moves) + " possible moves: "))
-    return i
-
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    #frame = tk.Frame(root, width=240, height=240)
-    #frame.pack(expand=True, fill=tk.BOTH)
-    canvas = tk.Canvas(root, bg='green', width=240, height=240)
-    canvas.pack(expand=True, fill=tk.BOTH)
-    root.mainloop()
-    # board = Board()
-    # board.play(get_human_move, display=True)
