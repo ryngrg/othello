@@ -42,9 +42,8 @@ def click_func(event):
                 board.make_move(idx)
                 disp_coins()
                 while not(board.end or human[board.player - 1]):
-                    bd, pl, n, mvs = board.get_curr_info()
-                    move = ai[board.player - 1].get_move(bd, pl, n, mvs)
-                    board.make_move(move)
+                    mv = ai[board.player - 1].get_move(board)
+                    board.make_move(mv)
                     disp_coins()
                 if board.end:
                     game_over()
@@ -77,8 +76,7 @@ if __name__ == "__main__":
     draw_bg_grid()
     disp_coins()
     if not human[0]:
-        bd, pl, n, mvs = board.get_curr_info()
-        move = ai[board.player - 1].get_move(bd, pl, n, mvs)
+        move = ai[board.player - 1].get_move(board)
         board.make_move(move)
         disp_coins()
     root.mainloop()
