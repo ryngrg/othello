@@ -77,7 +77,10 @@ if __name__ == "__main__":
     draw_bg_grid()
     disp_coins()
     if not human[0]:
-        move = ai[board.player - 1].get_move(board)
-        board.make_move(move)
-        disp_coins()
+        while not (board.end or human[board.player - 1]):
+            mv = ai[board.player - 1].get_move(board)
+            board.make_move(mv)
+            disp_coins()
+        if board.end:
+            game_over()
     root.mainloop()
