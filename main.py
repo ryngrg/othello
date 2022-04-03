@@ -68,6 +68,7 @@ if __name__ == "__main__":
     board = Board()
 
     root = tk.Tk()
+    root.resizable(False, False)
     canvas = tk.Canvas(root, bg='green', width=240, height=240)
     canvas.pack(expand=True, fill=tk.BOTH)
 
