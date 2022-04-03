@@ -1,3 +1,7 @@
+import math
+import copy
+
+
 class AI_Agent:
     def __init__(self, player, depth=5):
         self.player = player
@@ -9,9 +13,9 @@ class AI_Agent:
             if player == 1:
                 best_score = None
                 for i in range(n_moves):
-                    child = game.copy()
+                    child = copy.deepcopy(game)
                     child.make_move(i)
-                    score = self.minimax(child, 1, False)
+                    score = self.minimax(child, 1, -math.inf, math.inf, False)
                     if best_score is None or score > best_score:
                         best = i
                         best_score = score
@@ -19,9 +23,9 @@ class AI_Agent:
             else:
                 best_score = None
                 for i in range(n_moves):
-                    child = game.copy()
+                    child = copy.deepcopy(game)
                     child.make_move(i)
-                    score = self.minimax(child, 1, True)
+                    score = self.minimax(child, 1, -math.inf, math.inf, True)
                     if best_score is None or score < best_score:
                         best = i
                         best_score = score
@@ -30,14 +34,28 @@ class AI_Agent:
         else:
             return None
 
-    def minimax(self, game, depth, is_max):
+    def minimax(self, game, alpha, beta, depth, is_max):
         if game.end or depth >= self.max_depth:
             return self.heuristic(game, depth)
         if is_max:
-            pass
+            val = -math.inf
+            for i in range(game.n_moves):
+                ch = copy.deepcopy(game)
+                ch.make_move(i)
+                val = max(val, self.minimax(ch, depth+1, alpha, beta, False))
+                if val >= beta:
+                    break
+                alpha = max(alpha, val)
         else:
-            pass
-        return 0
+            val = math.inf
+            for i in range(game.n_moves):
+                ch = copy.deepcopy(game)
+                ch.make_move(i)
+                val = min(val, self.minimax(ch, depth+1, alpha, beta, True))
+                if val <= alpha:
+                    break
+                beta = min(beta, val)
+        return val
 
     @staticmethod
     def heuristic(game, depth):
