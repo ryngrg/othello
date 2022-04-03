@@ -34,31 +34,31 @@ class AI_Agent:
         else:
             return None
 
-    def minimax(self, game, alpha, beta, depth, is_max):
+    def minimax(self, game, depth, alpha, beta, is_max):
         if game.end or depth >= self.max_depth:
-            return self.heuristic(game, depth)
+            return self.heuristic(game, depth, is_max)
         if is_max:
             val = -math.inf
             for i in range(game.n_moves):
                 ch = copy.deepcopy(game)
                 ch.make_move(i)
                 val = max(val, self.minimax(ch, depth+1, alpha, beta, False))
+                alpha = max(alpha, val)
                 if val >= beta:
                     break
-                alpha = max(alpha, val)
         else:
             val = math.inf
             for i in range(game.n_moves):
                 ch = copy.deepcopy(game)
                 ch.make_move(i)
                 val = min(val, self.minimax(ch, depth+1, alpha, beta, True))
+                beta = min(beta, val)
                 if val <= alpha:
                     break
-                beta = min(beta, val)
         return val
 
     @staticmethod
-    def heuristic(game, depth):
+    def heuristic(game, depth, is_max):
         if game.end:
             if game.winner == 0:
                 return 0
@@ -66,4 +66,6 @@ class AI_Agent:
                 return 10000
             elif game.winner == 2:
                 return -10000
-        return 20 * (game.count(1) - game.count(2)) - (5 * depth)
+        elif is_max:
+            return 20 * (game.count(1) - game.count(2)) - (5 * depth)
+        return 20 * (game.count(1) - game.count(2)) + (5 * depth)
