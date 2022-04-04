@@ -27,7 +27,12 @@ def disp_coins():
 
 def game_over():
     print("game over")
-    print("winner is :", board.winner)
+    if board.winner == 0:
+        print("game drawn")
+    elif board.winner == 1:
+        print("black wins!")
+    elif board.winner == 2:
+        print("white wins!")
 
 
 def click_func(event):
@@ -47,7 +52,6 @@ def click_func(event):
                     disp_coins()
                 if board.end:
                     game_over()
-
     else:
         game_over()
 
